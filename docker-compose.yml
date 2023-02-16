@@ -1,0 +1,14 @@
+version: "3"
+services:
+  usersmongodb:
+    image: mongo:latest
+    container_name: "usersmongodb"
+    ports:
+      - 27017:27017
+  testusers:
+    image: testusers:1.0
+    container_name: testusers
+    ports:
+      - 8081:8081
+    links: 
+      - usersmongodb
