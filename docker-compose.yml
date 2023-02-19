@@ -9,6 +9,6 @@ services:
     image: testusers:1.0
     container_name: testusers
     ports:
-      - 8081:8081
+      - 8080:8080
     links: 
       - usersmongodb

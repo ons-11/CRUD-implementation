@@ -3,6 +3,7 @@ package com.stage.users.Controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.stage.users.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,62 +23,75 @@ import com.stage.users.Model.User;
 @RestController
 @RequestMapping("users")
 public class UserController {
-	
 	@Autowired
-	UserIservice userservice;
-	
-	
-	@PostMapping("/adduser")
+	UserIservice userService;
+	@Autowired
+	UserRepository userRepo;
+
+	@PostMapping("/add")
 	public ResponseEntity AddUser(@RequestBody User user) {
-		User usersave = null ; 
-	try {
-		usersave = userservice.addUser(user);;
-	} catch (Exception ex) {
-		ex.printStackTrace();
-        return  ResponseEntity.badRequest().body(ex.getMessage());
-	}
-		return ResponseEntity.status(HttpStatus.CREATED).body(usersave);
-	}
+		User saveUser = null ;
+		try {
+			saveUser = userService.addUser(user);;
+			}
+		catch (Exception ex) {
+				ex.printStackTrace();
+        		return  ResponseEntity.badRequest().body(ex.getMessage());
+			}
+		return ResponseEntity.status(HttpStatus.CREATED).body(saveUser);
+			}
 
-
-		@GetMapping("/getallusers")
-		public ResponseEntity getallusers(){
+		@GetMapping
+		public ResponseEntity getaAllUsers(){
 			List<User> users = new ArrayList<>();
 			try {
-				users = userservice.retrieveallusers();;
-				
-			}  catch (Exception ex) {
+				users = userService.retrieveAllUsers();
+				}
+			catch (Exception ex) {
 	            ex.printStackTrace();
 	            return ResponseEntity.badRequest().body(ex.getMessage());
 	        }
 	        return ResponseEntity.status(HttpStatus.OK).body(users);
 	    }
 
+		@GetMapping("/get/{id}")
 		
-		@GetMapping("/getuser/{id}")
-		
-		public ResponseEntity  getuser(@PathVariable("id") long id) {
+		public ResponseEntity  getUser(@PathVariable("id") long id) {
 			User user = null ;
 			try {
-				user = userservice.retrieveUserbyid(id);
+				user = userService.retrieveUserById(id);
 				}
-				catch (Exception ex) {
+			catch (Exception ex) {
 		            ex.printStackTrace();
 		            return ResponseEntity.badRequest().body(ex.getMessage());
 		        }
-		        return ResponseEntity.status(HttpStatus.OK).body(user);
+			return ResponseEntity.status(HttpStatus.OK).body(user);
 		    }
-	
-	
-		@PutMapping("/updateuser/{id}")
-		
-		public User updateuser(@RequestBody User user , @PathVariable("id") long id) {
-			return userservice.updateUser(user, id);
+
+		@PutMapping("/update/{id}")
+		public ResponseEntity updateUser(@RequestBody User user , @PathVariable("id") long id) {
+			User newUser = null;
+			try {
+				userService.updateUser(user, id);
+			}
+			catch (Exception ex) {
+				ex.printStackTrace();
+				return ResponseEntity.badRequest().body(ex.getMessage());
+			}
+			return ResponseEntity.status(HttpStatus.OK).body(newUser);
 		}
-		
+
 		@DeleteMapping("/delete/{id}")
-		public void deleteUser(@PathVariable("id") long id) {
-			
-			userservice.deleteUser(id);
+		public ResponseEntity deleteUser(@PathVariable("id") long id) {
+			try {
+				userService.deleteUser(id);
+			}
+			catch (Exception ex) {
+				ex.printStackTrace();
+				return ResponseEntity.badRequest().body(ex.getMessage());
+			}
+
+			return ResponseEntity.status(HttpStatus.OK).body("user deleted ");
 		}
-}
+
+		}

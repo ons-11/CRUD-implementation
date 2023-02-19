@@ -12,12 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Document(collection ="users")
 public class User {
-
 	@Id
 	private long id;
-	
 	private String firstname;
-	
 	private String lastname;
 	
 	
