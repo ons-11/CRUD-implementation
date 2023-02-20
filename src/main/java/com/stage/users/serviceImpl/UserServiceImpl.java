@@ -16,39 +16,34 @@ import com.stage.users.Repository.UserRepository;
 public class UserServiceImpl implements UserIservice {
 
 	@Autowired
-	UserRepository userRepo;
-
+	UserRepository userRepository;
 	@Override
 	public User addUser(User user) {
-		return userRepo.save(user);
+		return userRepository.save(user);
 	}
 
 	@Override
 	public User retrieveUserById(long id) {
-		return userRepo.findById(id).get();
+		return userRepository.findById(id).get();
 	}
 
 	@Override
 	public List<User> retrieveAllUsers() {
-		return userRepo.findAll();
+		return userRepository.findAll();
 	}
 
 	@Override
 	public void deleteUser(long id) {
-		userRepo.deleteById(id);
+		userRepository.deleteById(id);
 	}
 
 	@Override
 	public User updateUser(User user, long id) {
-		Optional<User> existingUser = userRepo.findById(id);
-		if (existingUser.isPresent()) {
-			User updateUser = existingUser.get();
-			updateUser.setFirstname(user.getFirstname());
-			updateUser.setLastname(user.getLastname());
-			userRepo.save(updateUser);
-			return updateUser;
-		} else {
-	throw new ResourceNotFoundException("user not found" + id);
-		}
+		User existingUser = userRepository.findById(id).orElseThrow(()
+				-> new ResourceNotFoundException("user not found: " + id));
+		existingUser.setFirstname(user.getFirstname());
+		existingUser.setLastname(user.getLastname());
+		userRepository.save(existingUser);
+		return existingUser;
 	}
 }
